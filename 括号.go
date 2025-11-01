@@ -1,39 +1,49 @@
 package main
 
 func isValid(s string) bool {
-	// 切分字符串
-	runes := make([]string, 0, len(s))
-	stack := make([]string, len(runes))
-	for _, value := range runes {
-		if len(stack) > 0 {
-			stack = append(stack, value)
-			continue
-		}
-		// 判断栈顶元素与映射关系是否一致
-		relationship := getRelationship(value)
-		if stack[0] == relationship {
-			//一致出栈
-			stack = append(stack[:1], stack[2:]...)
-			continue
-		}
-		//不一致入栈
-		stack = append(stack[:1], append([]string{value}, stack[1:]...)...)
-	}
-	//字符串遍历完 查看切片是否有剩余元素
-	if len(stack) > 0 {
+	if len(s)%2 != 0 {
 		return false
 	}
-	return true
+	stack := make([]string, 0)
+	for _, value := range s {
+		strChar := string(value)
+		// 如果是左括号，入栈
+		if isLeftBracket(strChar) {
+			stack = append(stack, strChar)
+			continue
+		}
+		// 如果是右括号
+		if len(stack) == 0 {
+			return false
+		}
+		// 判断栈顶元素与映射关系是否一致
+		top := stack[len(stack)-1]
+		expected := getRelationship(top)
+
+		if strChar == expected {
+			//一致出栈
+			stack = stack[:len(stack)-1]
+		} else {
+			// 不匹配，直接返回false
+			return false
+		}
+	}
+	//字符串遍历完 查看切片是否有剩余元素
+	return len(stack) == 0
+}
+
+func isLeftBracket(s string) bool {
+	return s == "(" || s == "[" || s == "{"
 }
 
 func getRelationship(s string) string {
 	switch s {
-	case "{":
-		return "}"
-	case "[":
-		return "]"
 	case "(":
 		return ")"
+	case "[":
+		return "]"
+	case "{":
+		return "}"
 	default:
 		return ""
 	}
