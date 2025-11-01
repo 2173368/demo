@@ -1,5 +1,10 @@
 package main
 
+import "fmt"
+
+func maie() {
+	fmt.Println(isValid("[[]]"))
+}
 func isValid(s string) bool {
 	if len(s)%2 != 0 {
 		return false
